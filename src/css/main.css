@@ -1,0 +1,165 @@
+:root {
+    --fg: #ccc;
+    --bg: #000000;
+    --link: rgb(212, 0, 255);
+    --visited: rgb(212, 0, 255);
+    --rule: #ccc;
+    --menu: 140px;   /* nav column */
+    --gutter: 20px;
+    --measure: 750px; /* content line length */
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 8px 6px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.35 "DejaVu Sans", Verdana, Geneva, Helvetica, Arial, sans-serif;
+}
+
+a         { color: var(--link); }
+a:visited { color: var(--visited); }
+
+/* sitewide top bar */
+#topbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 1em;
+    font-size: 16px;
+}
+
+#topbar a { text-decoration: none; }
+#topbar a:hover { text-decoration: underline; }
+
+/* title */
+#headings {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 28px;
+    margin: 34px 0 30px;
+}
+
+#sitename {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+
+#sitename a { color: var(--fg); text-decoration: none; }
+#sitename a:hover { text-decoration: underline; }
+
+/* nav column */
+#menu {
+    float: left;
+    width: var(--menu);
+    font-size: 16px;
+}
+
+#menu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* the lists nest so one rule indents every level down the open page
+the .nav-l0 .nav-l1 ... are for per depth styling */
+#menu ul ul { padding-left: 1em; }
+
+#menu li::before {
+    content: "\203a\a0"; /* > marker */
+    color: var(--fg);
+}
+
+#menu a {
+    text-decoration: none;
+    color: var(--fg);
+}
+
+#menu a:hover { text-decoration: underline; }
+
+/* the open branch and the page you are on */
+#menu .here > a    { font-weight: bold; }
+#menu .current > a { font-weight: bold; color: var(--visited); }
+
+
+/* content */
+
+#content {
+    margin-left: calc(var(--menu) + var(--gutter));
+    max-width: var(--measure);
+}
+
+#content > :first-child { margin-top: 0; }
+
+h1, h2, h3, h4 {
+    font-weight: bold;
+    line-height: 1.15;
+    margin: 1.4em 0 0.6em;
+}
+
+h1 { font-size: 31px; }
+h2 { font-size: 25px; }
+h3 { font-size: 20px; }
+h4 { font-size: 17px; }
+
+p, ul, ol, pre, table { margin: 0.85em 0; }
+
+#content ul, #content ol { padding-left: 1.6em; }
+#content li { margin: 0.1em 0; }
+
+pre, code, kbd, samp {
+    font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
+    font-size: 15px;
+}
+
+pre {
+    margin-left: 1.4em;
+    overflow-x: auto;
+}
+
+blockquote {
+    margin: 0.85em 0 0.85em 1.4em;
+    padding-left: 0.8em;
+    border-left: 3px solid var(--rule);
+}
+
+table { border-collapse: collapse; }
+th, td { border: 1px solid var(--rule); padding: 3px 8px; text-align: left; }
+
+img { max-width: 100%; height: auto; }
+
+/* what {{index}} expands to */
+#content .dirindex { padding-left: 1.6em; }
+#content .dirindex li { margin: 0.2em 0; }
+.empty { color: #555; font-style: italic; }
+
+/* post metadata, the bits ssg shits out for dated pages */
+.postDate, .tags, time { color: #555; font-size: 15px; }
+h2.post { margin-top: 0.2em; }
+
+#footer {
+    clear: both;
+    margin-top: 40px;
+    padding-top: 6px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+}
+
+/* narrow screen garbage */
+@media (max-width: 700px) {
+    #menu {
+        float: none;
+        width: auto;
+        margin-bottom: 1.6em;
+        padding-bottom: 1em;
+        border-bottom: 1px solid var(--rule);
+    }
+    #content { margin-left: 0; }
+    #headings { margin: 22px 0 20px; }
+    #sitename { font-size: 28px; }
+}
