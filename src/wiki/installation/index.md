@@ -1,4 +1,4 @@
-title: basix wiki
+title: Basix Wiki
 
 # Basic Basix installation guide
 
@@ -187,21 +187,36 @@ And wait for this to finish. Given Basix is a rather lean system by default, thi
 
 You may have noticed that Basix didn't ship with a kernel by default. This is very much intentional. You may install the kernel as configured by me by simply running:
 
-``bpm install linux``
+``bpm install linux-stable`` for the latest stable kernel release, or
+``bpm install linux-lts`` for the latest lts branch
 
-and waiting. Given this is a full fat kernel config that supports a huge range of hardware, this may take a while.
+..and waiting. Depending on your hardware, this may take a while.
 
 If you would like to configure your own kernel, you must shadow the `linux` package. You may view directions for this in the ``/etc/bpm/repos.conf`` file.
 
 To configure your own kernel, simply replace the `dotconfig` file in the `linux` packages `files/` directory with your own. This is very much not a required step.
 
+You may **also** tune your kernel to a lesser extent with use flags. By default I've disabled various things I can't imagine a typical user needing, such as FPGA support for example- but also support for things that won't work well or at all on Basix anyway, such as novideo GPUs. If you want to do this, take a look at `/etc/bpm/package.use` and `bpm q linux-stable` for a readout of available use flags.
+
+## Installing firmware
+
+If you aren't running Basix in a virtual machine, you probably need to do this (if you're using fully foss hardware, i figure you're well aware of that fact).
+
+You may install the mostly closed source set of firmware blobs by running:
+
+``bpm install linux-firmware``
+
+By default, this includes a slightly shrunk down subset (no nvidia support, primarily) of the Linux firmware collection, and should cover all reasonable hardware.
+
+If you would like to strip this of things you don't need, or I've disabled something you *do* need, you may control this with use flags the same way you may have with the kernel.
+
 ## Installing fsprogs
 
-Install whatever filesystem programs you need. For this example, the package name would be ``xfsprogs``.
+Install whatever filesystem programs you need. For this example, the package name would be ``xfsprogs``. At minimum, you should probably have `dosfstools` on a UEFI system.
 
 ## Installing network utilities
 
-If you simply use dhcp on your network via ethernet, all you need to do is install the `dhcpcd` package.
+If you simply use dhcp on your network via ethernet, all you need to do is install the `dhcpcd` package and enable its services (see the [services](/wiki/services) page).
 
 Otherwise, if you're using wireless, you may additionally install the `wpa_supplicant` package.
 
@@ -275,8 +290,6 @@ Yep. Create hooks in `/etc/bpm/hooks/` to automate the configuration of your boo
 
 Don't forget to set your ``passwd`` for the root user at least.
 
-I would **HIGHLY** recommend installing the `s6-frontend` package, just to make life less agonizing.
-
-From this point on, you should be ready to reboot into your new system. You could go ahead and build and install more packages now if you want, though. Good examples may be a more fleshed out text editor such as `vim` or `emacs`, or potentially `openresolv`.
+From this point on, you should be ready to reboot into your new system. You could go ahead and build and install more packages now if you want, though. Good examples may be a more fleshed out text editor such as `vim` or `emacs`, or potentially something like `openresolv` for networking.
 
 Have fun!
