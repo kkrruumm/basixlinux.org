@@ -28,9 +28,11 @@ Those who are caught vibecoding contributions will be permanently banned from fu
 
 What I would like users of LLMs to consider, however, is the impact these disgusting corporations are having on the climate, the impact they have on those who unfortunately live near a datacenter, and the impact they may have on their users (watch Idiocracy).
 
-To TL;DR, I expect all contributions to be well understood by the contributor and hand-written by said contributor. Not that I'll reasonably know if you've done otherwise, but don't be a dick. If you use an LLM to gain understanding and information, whatever, fuck it, given in my mind it's largely indifferent from the way things were prior to this shitfest- that being gathering information off of half-related stackoverflow threads and some random dudes blog found via a search engine (though, "random dudes blog" is very likely to be much more valid).
+To TL;DR, I expect all contributions to be well understood by the contributor and hand-written by said contributor. Not that I'll reasonably know if you've done otherwise, but don't be a dick. If you use an LLM to gain understanding and information, that's fine. In my mind it's largely indifferent from the way things were prior to the age of clankers- that being gathering information off of half-related stackoverflow threads and some random dudes blog found via a search engine (though, "random dudes blog" is very likely to be much more valid).
 
-In addition, if you send in some vibecoded bullshit, why should anyone show you the respect of reading through it and interacting at all if you can't show the respect of contributing something of quality that you put effort into? Don't be an asshole.
+In addition, if you send something that is clearly a low effort copy and paste from an LLM, I'm going to put as little effort as possible into closing your PR without further thought. Eye for an eye.
+
+I'd also like to throw it out there that the (maybe unintentional?) side effect of LLMs resulting in full decompilations of proprietary software left and right these days is pretty cool.
 
 # When you say Basix is non-corporate, what do you mean?
 
@@ -44,7 +46,7 @@ Everything is political.
 
 Everyone. In any Basix social groups, there are certain types of behavior that are completely impermissible. Things such as homophobia, transphobia, cisphobia, racism, etc. are not allowed. Do not be the type of person that would make me want to apply rules to a community that is largely loosely directed.
 
-TL;DR, **don't be an asshole**. Everyone is different, otherwise reality would be incredibly boring.
+TL;DR, **don't be an asshole**. Everyone is different, otherwise life would be incredibly boring.
 
 # Is this a democracy?
 
@@ -71,6 +73,14 @@ In general, there are some requirements as to what gets to be in the repo, thoug
 2. Repo fluff like themes, 300 fetch programs, fonts that don't exist for the sake of readability, icon themes, etc. belong in your own repo.
 
 3. There's a bit of an arbitrary quality requirement, I can't provide a hard set definition for this here, so this will be applied in the moment if needed.
+
+# Does Basix include any proprietary software?
+
+Ideally it wouldn't, and almost doesn't. The `linux-firmware` package unfortunately needs to exist for most hardware to work. External to this, proprietary software is strictly forbidden.
+
+# Does Basix collect any information about its users?
+
+No.
 
 # Where did the name "Basix" come from?
 

@@ -2,7 +2,7 @@ title: Basix Linux
 
 # About
 
-Basix is a strictly non-corporate Linux(R) meta-distribution for the x86_64 architecture (though, there's little to no reason it can't be ported to others) that primarily focuses on *actual* modularity, conceptual simplicity, and user freedom.
+Basix is a strictly non-corporate Linux(R) meta-distribution for the x86_64 architecture (though, there's little to no reason it can't be ported to others) that primarily focuses on *actual* modularity, conceptual simplicity, user freedom, and reasonable security. Basix is not and will never be targeted at newer unix-like users.
 
 The (primary) goal of Basix is not extreme minimalism, though minimalism tends to be a result of a conceptually simple and modular base system.
 
