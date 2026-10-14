@@ -1,4 +1,4 @@
-title: basix philosophy
+title: Basix Philosophy
 
 # What is this page?
 

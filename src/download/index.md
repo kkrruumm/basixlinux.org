@@ -1,4 +1,4 @@
-title: basix download
+title: Basix Download
 
 This is just served off of this box directly for the time being with no CDN or torrent. Forgive the probable slowness.
 

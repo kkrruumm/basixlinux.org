@@ -1,4 +1,4 @@
-title: basix social groups
+title: Basix Social Groups
 
 # IRC
 
