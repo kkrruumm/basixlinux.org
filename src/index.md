@@ -45,6 +45,8 @@ ntp: [openntpd](https://openntpd.org/)
 
 seat management: [seatd](https://sr.ht/~kennylevinsen/seatd/) + [dumb_runtime_dir](https://github.com/ifreund/dumb_runtime_dir).
 
+initramfs: [tinyramfs](https://github.com/illiliti/tinyramfs)
+
 ..and much more. If you're after an elaboration on why all of this stuff has been chosen, view the [philosophy](philosophy/index.html) page.
 
 # Thank you
