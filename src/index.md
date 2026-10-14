@@ -64,4 +64,6 @@ If these didn't exist to ~~yoink ideas and code from~~ reference, `bpm` would pr
 
 This website is a knockoff of [werc](https://werc.cat-v.org/), but generated with the SSG in the footer.
 
+The source for this website is [here](https://github.com/kkrruumm/basixlinux.org). Contributions, extensions, and corrections to documentation would be greatly appreciated.
+
 As for the box itself, this was the cheapest vps I could acquire from a somewhat reasonable hosting provider. It is currently running OpenBSD, and this website is served with OpenBSDs very own [httpd](https://man.openbsd.org/httpd.8).
