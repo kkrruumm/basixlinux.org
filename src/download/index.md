@@ -6,6 +6,6 @@ At some point, there will be a torrent and that will become the "CDN" as opposed
 
 [download basix](https://files.basixlinux.org/)
 
-b3sum: ``36b3a943496711703fca073e845e66ef5cae2e984857032e00c69edfdc618ae4``
+b3sum: ``ee8da117af142ee1f14c5a32ecc676a23c0a4edb04286730b1e8b92b245e3aad``
 
 If you do not trust that this page hasn't been tampered with, you may also reference the blake3 hash in the IRC channel.
