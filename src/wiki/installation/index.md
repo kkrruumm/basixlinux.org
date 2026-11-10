@@ -146,16 +146,16 @@ If there are any adjustments you'd like to make to build flags or otherwise glob
 For example, these are my own compiler settings:
 
 ```
-: "${CFLAGS:=-O2 -pipe -march=x86-64-v3 -mtune=generic -fno-plt -fno-semantic-interposition}"
-: "${CXXFLAGS:=$CFLAGS}"
-: "${LDFLAGS:=-Wl,-O1,--as-needed,--sort-common,-z,pack-relative-relocs}"
+: "${CFLAGS:=-O2 -pipe -march=x86-64-v3 -fno-plt -fno-semantic-interposition -fstack-protector-strong -fstack-clash-protection -ftrivial-auto-var-init=zero -Wformat -Werror=format-security -U_FORTIFY_SOURCE -Wp,-D_FORTIFY_SOURCE=3}"
+: "${CXXFLAGS:=$CFLAGS -D_GLIBCXX_ASSERTIONS}"
+: "${LDFLAGS:=-Wl,-O1,--as-needed,--sort-common,-z,relro,-z,now,-z,noexecstack,-z,pack-relative-relocs}"
 
 : "${CGO_CFLAGS:=$CFLAGS}"
 : "${CGO_CXXFLAGS:=$CXXFLAGS}"
 : "${CGO_LDFLAGS:=$LDFLAGS}"
 
-: "${RUSTFLAGS:=-C opt-level=3 -C target-cpu=x86-64-v3 -C target-feature=-crt-static -C link-arg=-Wl,-O1 -C link-arg=-Wl,--as-needed -C link-arg=-Wl,--sort-common}"
-: "${GOFLAGS:=-trimpath -buildvcs=false}"
+: "${RUSTFLAGS:=-C opt-level=3 -C target-cpu=x86-64-v3 -C target-feature=-crt-static -C relro-level=full -C link-arg=-Wl,-O1,--as-needed,--sort-common,-z,now,-z,noexecstack,-z,pack-relative-relocs}"
+: "${GOFLAGS:=-trimpath -buildvcs=false -buildmode=pie}"
 : "${GOAMD64:=v3}"
 : "${CGO_ENABLED:=1}"
 : "${ZIGFLAGS:=-Doptimize=ReleaseSafe -Dcpu=x86_64_v3}"
@@ -185,7 +185,7 @@ And wait for this to finish. Given Basix is a rather lean system by default, thi
 
 ## Installing the Linux kernel
 
-You may have noticed that Basix didn't ship with a kernel by default. This is very much intentional. You may install the kernel as configured by me by simply running:
+You may have noticed that Basix didn't ship with a kernel by default. You may install the kernel as configured by me by simply running:
 
 ``bpm install linux-stable`` for the latest stable kernel release, or
 ``bpm install linux-lts`` for the latest lts branch
@@ -289,6 +289,8 @@ Yep. Create hooks in `/etc/bpm/hooks/` to automate the configuration of your boo
 ## Finishing up
 
 Don't forget to set your ``passwd`` for the root user at least.
+
+You probably need to enable a handful of services at minimum such as `mdevd`, `mdevd-coldplug`, and some gettys. There is no assertion as to what you want to start on boot, so this remains manual. Take a look at the [services](/wiki/services) page for information.
 
 From this point on, you should be ready to reboot into your new system. You could go ahead and build and install more packages now if you want, though. Good examples may be a more fleshed out text editor such as `vim` or `emacs`, or potentially something like `openresolv` for networking.
 
