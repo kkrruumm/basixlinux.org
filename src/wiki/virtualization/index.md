@@ -67,7 +67,7 @@ nemu will automatically use this when you request a viewer from the UI.
 
 # libvirt
 
-libvirt is in the repository, though is more or less not recommended. Nonetheless, if you would like to use it, install the `libvirt` package and enable the ``libvirtd libvirtd-log virtlogd virtlogd-log`` services.
+libvirt is in the repository, though is more or less not recommended. Nonetheless, if you would like to use it, install the `libvirt` package and enable the `libvirtd` and `virtlogd` services.
 
 After installation, standard `virsh` commands will be available to control your virtual machines. You will have to set up your VMs XML yourself.
 
