@@ -2,191 +2,200 @@ title: Basix Wiki
 
 # Introduction
 
-By default, Basix currently uses the [s6](https://skarnet.org/software/s6/) init/supervision suite.
+By default, Basix uses the [nitro](https://github.com/leahneukirchen/nitro) init/service manager.
 
-This includes:
-  - [s6](https://skarnet.org/software/s6/)
-  - [s6-rc](https://skarnet.org/software/s6-rc/)
-  - [s6-linux-init](https://skarnet.org/software/s6-linux-init/)
-  - [s6-frontend](https://skarnet.org/software/s6-frontend/)
+This is supplemented by s6' [s6-log](https://www.skarnet.org/software/s6/s6-log.html) and runits [chpst](https://smarden.org/runit/chpst.8)
 
-In addition, Basix also defaults to skarnets [execline](https://skarnet.org/software/execline/) scripting language for typical services (though, core services are still POSIX shell, bear with me)
+All "normal services" are written in the [execline](https://www.skarnet.org/software/execline/) scripting language because these are generally just `exec`s with very little logic.
 
-In general, everything from skarnet is abnormally high quality ~~albeit baiscally impossible to interact with in the case of s6 without its frontend~~, incredibly modular, small, efficient, and powerful.
+Core system services that perform more complex operations are not written in execline as that would be far less efficient compared to just spawning a shell.
 
-All Basix documentation will assume the usage of s6-frontend.
+This wiki page exists to document basic usage of this stack, and you should absolutely consult the pages linked above for in-depth information.
 
-This page isn't meant to be an all-encompassing guide to using s6, but rather just enough to get a user going. Those who want more information should visit the [skarnet website](https://skarnet.org/) and read around, or, read the manpages shipped with s6-* packages on Basix.
+# System Services
 
-# System services
+Services are kept in `/etc/sv`. Symlinks to said services, when supervision of them is desired, are kept in `/etc/nitro`.
 
-When a package ships a service, its "source" directory, that being the directory that contains its `run` script and otherwise, it's placed in `/usr/share/s6-rc/sources`. This is not meant to be directly interacted with on Basix, but rather by service-providing packages. You may reference packages in the repository that provide services of some form, such as [openntpd](https://github.com/kkrruumm/basix-packages/tree/main/openntpd) for this.
+# Usage
 
-For services that the sysadmin may create, they are to be placed in `/etc/s6-rc/sources` (more on that later).
-
-## Usage
-
-s6 is not particularly similar in usage command wise to something along the lines of runit. s6 is largely (entirely? dont quote me) free of polling, and `/sbin/init` isn't a static thing.
-
-What this means for the sysadmin is that when an modifying a system service, adding a new service, whatever it may be- the "database" has to be rescanned, recompiled, and optionally applied (committed, basically) so it will stick between boots.
-
-For commands, largely, when using s6-frontend (for all that is good please do), the help output covers usage pretty well:
+Most of your questions are probably answered by nitroctl(1):
 
 ```
-(0) sagittarius ~ > s6 --help
-Usage: s6 [ global_options... ] command subcommand [ subcommand_options... ] [ args... ]
+NITROCTL(1)                 General Commands Manual                NITROCTL(1)
 
-For details about a command and its options, try: s6 command help (e.g.: s6 live help)
+NAME
+     nitroctl - control and manage services monitored by nitro
 
-Commands:
-  help		this message
-  version	print the version of this package
-  system	boot and shutdown the system
-  live		start and stop services and their dependencies
-  process	control individual long-running processes
-  set		manipulate sets of services (offline, to later install them live)
-  repository	manipulate the service repository itself
+SYNOPSIS
+     nitroctl [-t timeout] [-v] command services ...
 
-Shortcuts:
-  enable	s6 set enable
-  disable	s6 set disable
-  start		s6 live start
-  stop		s6 live stop
-  kill		s6 process kill
-  apply		s6 set apply
+DESCRIPTION
+     nitroctl supports the following commands:
 
-Global options:
-  -h		--help			equivalent to "s6 help"
-  -u		--user			override config values with XDG environment
+     list             List all services and information about them (default).
+     scan, rescan     Rescan the service list from the file system.
+     up, u            Request services to be up.
+     down, d          Request services to be down.
+     start            Request services to be up and wait for it to enter UP.
+     stop             Request services to be down and wait for it to enter
+                      DOWN.
+     restart          Request services to be restarted and wait for it to be
+                      UP again.
+     fast-start       Request services to be started and wait for it to be in
+                      state STARTING.
+     fast-stop        Request services to be down and wait for it to be in
+                      state SHUTDOWN.
+     fast-restart, r  Request services to be restarted and wait for it to be
+                      in state RESTART.
+     ready            If services are in state STARTING, put them into state
+                      UP.
+     wait-up          Wait for services to be in state UP.
+     wait-down        Wait for services to be in state DOWN or FATAL.
+     wait-starting    Wait for services to be in state STARTING or UP or
+                      ONESHOT.
+     pause, cont, hup, alarm, interrupt, quit, term, kill, 1, 2
+                      Send the signal to services.  The first character can be
+                      used as a shortcut.
+     pidof            Print PIDs of the services.
+     check            Exit with status 0 if the services are running (known
+                      PID)
+     Reboot           Request system reboot.
+     Shutdown         Request system shutdown.
 
-		--color=yes|no|auto	display fancy or boring-but-parsable text.
-					auto is the default: fancy if in a terminal.
+     Note that requesting multiple transitions in a single invocation only
+     guarantees each service has reached the target state at some point, not
+     that all services are in the target state at the same time when nitroctl
+     exits.  Requested service state transitions happen concurrently.
 
- These options override the values set in s6-frontend.conf:
-  -v V		--verbosity=V		verbosity (0 is terse, 1 is normal/default, more is verbose)
-  -s SCANDIR	--scandir=SCANDIR	where s6-svscan is running
-  -l LIVEDIR	--livedir=LIVEDIR	s6-rc live directory
-  -r REPODIR	--repodir=REPODIR	s6-rc service set repository
-  -c BOOTDB	--bootdb=BOOTDB		live database the system is booting on
-		--stmpdir=STMPDIR	root-only temporary directory
-		--storelist=LIST	list of service stores
-		--fdholder-user=USER	the s6-fdholderd user embedded in service databases
+     The options are as follows:
+
+     -t timeout       Exit after timeout seconds (as a decimal number) if the
+                      target state has not been reached.  By default, the
+                      timeout is infinite.
+
+     -v               Verbose mode, print each state transition as it happens.
+
+ENVIRONMENT
+     NITRO_SOCK
+             The control socket (by default: /var/run/nitro/nitro.sock) where
+             nitro(8) listens for commands.
+
+EXIT STATUS
+     The nitroctl utility exits 0 on success, and >0 if an error occurs.
+
+SEE ALSO
+     nitro(8)
+
+AUTHORS
+     Leah Neukirchen <leah@vuxu.org>
+
+Linux 7.2.12_1                 January 23, 2026                 Linux 7.2.12_1
 ```
 
-### Listing available services
+## Listing the currently supervised services
 
-When running `s6 set list`, a list of services in general will be listed.
-
-When running `s6 set status`, a list of services in general will be listed but will also include their current state. Example:
+When running `nitroctl` with no arguments, a list of currently supervised (symlinked to /etc/nitro) services and their current state is listed. Example:
 
 ```
-(0) sagittarius ~ > s6 set status
-sysctl/always
-swap/always
-random-seed/always
-mount-fs/always
-loopback/always
-hostname/always
-fsck/always
-devices/always
-getty-tty2/active
-getty-tty1/active
-mdevd-coldplug/active
-mdevd/active
-run-user-dir/active
-nftables/active
-virtlogd-log/active
-virtlogd/active
-seatd-log/active
-seatd/active
-ntpd-log/active
-ntpd/active
-libvirtd-log/active
-libvirtd/active
-greetd-log/active
-greetd/active
-dbus-log/active
-dbus/active
-acpid-log/active
-acpid/active
-zram/active
-hidepid/active
-gpu-downclock/active
-cpu-governor/active
-bridge/active
-sshd-log/usable
-sshd/usable
-snooze-15m-log/usable
-snooze-15m/usable
-snooze-daily-log/usable
-snooze-daily/usable
-snooze-hourly-log/usable
-snooze-hourly/usable
-snooze-monthly-log/usable
-snooze-monthly/usable
-snooze-weekly-log/usable
-snooze-weekly/usable
-dhcpcd-log/usable
-dhcpcd/usable
+(0) sagittarius ~ > doas nitroctl
+doas (kris@sagittarius) password:
+UP LOG@acpid (pid 3643) (wstatus 0) 13756s
+UP LOG@dhcpcd (pid 3658) (wstatus 0) 13756s
+UP LOG@greetd (pid 3640) (wstatus 0) 13756s
+UP LOG@local (pid 3656) (wstatus 0) 13756s
+UP LOG@mdevd (pid 3303) (wstatus 0) 13760s
+UP LOG@mdevd-coldplug (pid 3307) (wstatus 0) 13760s
+UP LOG@nftables (pid 3631) (wstatus 0) 13756s
+UP LOG@ntpd (pid 3633) (wstatus 0) 13756s
+UP LOG@seatd (pid 3637) (wstatus 0) 13756s
+UP LOG@smartd (pid 3653) (wstatus 0) 13756s
+UP LOG@tty1 (pid 3647) (wstatus 0) 13756s
+UP LOG@tty2 (pid 3650) (wstatus 0) 13756s
+UP acpid (pid 3644) (wstatus 0) 13756s
+UP dhcpcd (pid 3660) (wstatus 0) 13756s
+UP getty@tty1 (pid 3648) (wstatus 0) 13756s
+UP getty@tty2 (pid 3651) (wstatus 0) 13756s
+UP greetd (pid 3699) (wstatus 0) 13754s
+ONESHOT local (wstatus 0) 13756s
+UP mdevd (pid 3304) (wstatus 0) 13760s
+ONESHOT mdevd-coldplug (wstatus 0) 13756s
+ONESHOT nftables (wstatus 0) 13756s
+UP ntpd (pid 3635) (wstatus 0) 13756s
+UP seatd (pid 3639) (wstatus 0) 13756s
+UP smartd (pid 3654) (wstatus 0) 13756s
 ```
 
-In this case, we can see that various services here are marked "always," meaning that they are marked with a `flag-essential` file. What this means is that they are considered fundamental services, and will *always* be run.
+## Enabling and starting a service
 
-Other services here are tagged "active," which means enabled but not strictly required.
+"Enabling" a service in this context means symlinking it to nitros supervision directory. Without doing this, nitro won't even know the service exists.
 
-At the bottom of my list of services, there are a handful marked "usable," meaning they exist to the current database but are not enabled.
+To do so, for example:
 
-### Enabling and starting a service
+``ln -s /etc/sv/smartd /etc/nitro``
 
-If you wish to just start a service, this may be done by running `s6 start dhcpcd dhcpcd-log`, for example.
+After doing this, you will need to have nitro rescan for services. You may do this by running `nitroctl rescan`.
 
-If you wish to enable and start a service while having it persist across reboots, you may run `s6 enable dhcpcd dhcpd-log && s6 start dhcpcd dhcpcd-log && s6 apply`.
+## Enabling and starting a parameterized service
 
-Note the existence of the attached `-log` service on certain things, if a service has a `producer-for` and `consumer-for` setup both will be required. More information on that below.
+Some services may be parameterized, such as ``getty@`` (notice the @).
 
-### Disabling and stopping a service
+What this means is that there's one service that takes arguments and may change behavior based on its name, and thus may be used to spawn several services.
 
-Almost to be expected, you can run: ``s6 disable dhcpcd dhcpcd-log && s6 stop dhcpcd dhcpcd-log``. If you want this to persist across reboots, don't forget to ``s6 apply``.
+To do this, enable the `getty@` service, for example.
+
+You may then symlink *that* to other services, such as `getty@tty1` or `getty@tty2`.
+
+## Disabling and stopping a service
+
+Remove its symlink. For example:
+
+``rm /etc/nitro/smartd``
+
+Run `nitroctl rescan` so nitro will be aware the service is gone.
+
+## Starting or stopping while supervised
+
+Run `nitroctl {start,stop} <service>` to start or stop a service while keeping its supervision symlink.
 
 ## Custom services
 
-If an admin wishes to create their own service, they may place it in `/etc/s6-rc/sources`.
+If a sysadmin wishes to create their own service, they may place it in `/etc/sv`.
 
-A typical service directory here may follow this structure, as an incredibly simple oneshot service:
-
-```
-/etc/s6-rc/sources/zram/
-├── dependencies.d
-│   └── mdevd-coldplug
-├── type
-└── up
-```
-
-In this case, `dependencies.d/mdevd-coldplug` is just an empty file telling s6 that `mdevd-coldplug` should come up before this is run.
-
-`up` contains our actual service script, in my case:
+A typical service directory may follow this structure, as an incredibly simple oneshot service:
 
 ```
-if { zramctl /dev/zram0 --algorithm lz4 --size 24G }
-if { mkswap /dev/zram0 }
-swapon -d -p 100 /dev/zram0
+(0) sagittarius ~ > tree /etc/sv/nftables/
+/etc/sv/nftables/
+├── finish
+└── setup
 ```
 
-..and `type` contains the type of service this is. Typically, this is one of `longrun` or `oneshot`. If this were a `longrun` service, the executable would be titled `run` as opposed to `up`. In this case, this file only contains the text "oneshot"
+When a service has a `setup` script but no `run` script, nitro considers it a `oneshot` service.
 
-Of course, you may also have a `down` script, if needed or wanted.
+If you want a long-running service, you should generally have a `run` script here that `exec`s something to replace the caller, whether that be an execline script, shell script, actual binary, whatever.
 
-After creating your custom service, you should run ``s6 repository sync`` so that s6 will pick up your new service. Upon doing this, it should appear in your set listings, and you may enable and treat this like any other service.
+If you have a service that has dependencies, there is an included `need` wrapper at `/usr/lib/nitro/need` that may be used in a `setup` script.
 
-If you wish to attach a logger to your service, create a second ``zram-log`` service that is the ``consumer-for`` zram, and zram is the ``producer-for`` the logger. To do this, just create those files and place the service names in the corresponding ``*-for`` files.
+For example:
 
-The logger service should, in addition, contain a ``notification-fd`` that generally contains ``3``, as a readiness check.
+```
+(0) sagittarius ~ > cat /etc/sv/greetd/setup
+#!/bin/execlineb -P
+fdmove -c 2 1
+/usr/lib/nitro/need seatd
+```
 
-## Reading logs
+Admittedly this script is a slight bit of a hack (what isn't?) and probably isn't strictly necessary, but it improves UX a bit and is likely superior to blind crash looping like you'd do with runit.
 
-By default, every service that may produce logs has an attached ``<service>-log`` service that spawns an attached s6-log process.
+Upon creating your custom service, symlink it to `/etc/nitro` and treat it like any other service.
 
-All of these services will get their own distinct directory in ``/var/log/<service>``. An example of this directory may be:
+If you need to run something as another user from a service, use [chpst](https://smarden.org/runit/chpst.8).
+
+# Reading logs
+
+By default, you will have a `LOG@` service enabled. This is an all-encompassing default logger service for every other service that doesn't specify its own logging setup.
+
+All services will get their own distinct directory in `/var/log/<service>`. An example of this directory may be:
 
 ```
 (0) sagittarius ~ > doas ls -al /var/log/greetd
@@ -200,19 +209,22 @@ drwxr-xr-x  18 root root 4096 Oct 10 01:10 ..
 
 These logs are only readable by root by default.
 
-Given s6-log is reasonably sane, these are just plaintext logs. View them however you wish.
-
-There is also a more generalized log directory at ``/run/uncaught-logs/``. Generally, this just contains logs from the boot/init process. This log is also only readable to root.
-
+Given s6-log is sane, these are just plaintext logs (cough cough). View the contents however you wish.
 
 # Core system services
 
-There are a handful of services on Basix that are considered "core" services which are run by the init system before any "normal services" get to run. These are provided by the ``baseinit`` package, and are stored in ``/usr/lib/s6-rc/scripts/``. 
+There are a handful of services on Basix that are considered "core" services and thus are run by the init system before any of the "normal" services get to run. These are provided by the ``baseinit`` package and are kept in `/usr/lib/nitro/scripts`. If you're curious, you may view these [here](https://github.com/kkrruumm/basix-packages/tree/main/sys/baseinit/files/scripts).
 
-An example of one of these scripts is the `devices` script, which is pretty much always required for anything else at all to be functional.
+What actually kicks off these scripts would be `/etc/sv/SYS/setup`.
 
-# I don't want to use s6!
+These are written in POSIX shell as they perform relatively complex operations and execline becomes drastically less efficient with more complex scripts.
 
-Remove its packages and the ``baseinit`` package, disable the global `services` use flag, and use something else! [nitro](https://github.com/leahneukirchen/nitro) is one of my favorites, personally.
+# I don't want to use nitro!
 
-This will, however, mean you must write your own services, including core ones.
+Sweet! The primary point of Basix is modularity, and will not stand in the way of replacing it with something else on your own system.
+
+Disable the global `services` use flag in `/etc/bpm/bpm.conf` so packages will not install service files, remove or simply do not install the `baseinit` package, and install something else.
+
+If you're using something that doesn't just kick off scripts and supervise the result for services, you will have to write your own services.
+
+There are currently no other init/supervision setups in the core repository, so packages for other inits/service managers should go in your own package repository (setting this up is much easier than it sounds or would be on most other distros!).
