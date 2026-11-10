@@ -17,7 +17,9 @@ Basix defaults to some potentially unusual software, but all of this can be chan
 
 Most of these may be considered "replacements" for typical software.
 
-init/service management/logging/etc: [s6](https://skarnet.org/software/s6/)
+init/service management: [nitro](https://github.com/leahneukirchen/nitro)
+
+logging: [s6-log](https://www.skarnet.org/software/s6/s6-log.html)
 
 ssl: [libressl](https://www.libressl.org/)
 
@@ -37,7 +39,7 @@ cron: a wrapper around [snooze](https://github.com/leahneukirchen/snooze)
 
 man: [mandoc](https://mandoc.bsd.lv/)
 
-privilege escalation: [opendoas](https://github.com/Duncaen/OpenDoas) OR [s6-sudo](https://skarnet.org/software/s6/s6-sudo.html)
+privilege escalation: [opendoas](https://github.com/Duncaen/OpenDoas)
 
 display server: [wayland](https://wayland.freedesktop.org/)
 
