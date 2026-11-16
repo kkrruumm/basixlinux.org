@@ -31,7 +31,7 @@ libc: [musl](https://musl.libc.org/)
 
 package manager: our very own [bpm](https://github.com/kkrruumm/bpm)
 
-service scripts: [execline](https://www.skarnet.org/software/execline/)
+service scripts: just POSIX shell scripts
 
 rsync: [openrsync](https://github.com/kristapsdz/openrsync)
 
@@ -66,7 +66,7 @@ If these didn't exist to ~~yoink ideas and code from~~ reference, `bpm` would pr
 
 # This website, huh?
 
-This website is a knockoff of [werc](https://werc.cat-v.org/), but generated with the SSG in the footer.
+This websites design is a knockoff of [werc](https://werc.cat-v.org/), but generated with the SSG in the footer.
 
 The source for this website is [here](https://github.com/kkrruumm/basixlinux.org). Contributions, extensions, and corrections to documentation would be greatly appreciated.
 
