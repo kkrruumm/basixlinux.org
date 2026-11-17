@@ -6,6 +6,12 @@ This page exists to elaborate on why Basix is the way it is, and to clarify on a
 
 Given I'm largely not a fan of blanket statementing rules, this page may also be treated as a form of code of conduct in lieu of one.
 
+# Start here
+
+You should start by reading *all* of the [Unix Koans of Master Foo](http://www.catb.org/~esr/writings/unix-koans/index.html), if you haven't already.
+
+In particular, I'm personally a big fan of [Master Foo and the Ten Thousand Lines](http://www.catb.org/~esr/writings/unix-koans/ten-thousand.html).
+
 # Why does Basix use XYZ software instead of ZYX by default?
 
 The default set of software is largely based on the lead Basix developers' (thats me hi) opinions on how a system should be, but what that largely means is a system that is sensibly usable by default but can be easily modified.
@@ -24,7 +30,7 @@ Kinda. This is a tough subject, so I'm going to provide a ballpark explanation f
 
 To explain this, I feel a definition of "vibecoding" is required.
 
-What I consider "vibecoding" to be would be "<insert LLM here>, write me an init system. Make no mistakes." What I do *not* consider to be vibecoding, however, would be questions such as "<insert LLM here>, how does XYZ work?" and using it to gather a proper, genuine understanding of what you are interacting with. These are two distinct usages of slopbots, be responsible.
+What I consider "vibecoding" to be would be "LLM, write me an init system. Make no mistakes." What I do *not* consider to be vibecoding, however, would be questions such as "LLM, how does XYZ work?" and using it to gather a proper, genuine understanding of what you are interacting with. These are two distinct usages of slopbots, be responsible.
 
 What I would like users of LLMs to consider, however, is the impact these corporations are having on the climate, the impact they have on those who unfortunately live near a datacenter, and the impact they may have on the user (watch Idiocracy). I would also like to ask if it is *really* necessary to waste water and fry your brain to understand software that is conceptually simple and small. I also can't afford storage at the moment due to this, so I'm pretty irritated personally.
 
